@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="header" class="mx-auto w-full max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
+    <div class="rounded-3xl border border-white/30 bg-white/15 px-6 py-5 text-white shadow-2xl backdrop-blur dark:border-white/10 dark:bg-stone-950/35">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+                <p class="text-sm font-semibold uppercase tracking-[0.35em] text-white/80">Spring Finance</p>
+                <h1 class="mt-2 font-serif text-3xl font-bold">Panel de movimientos</h1>
+            </div>
+            <nav class="flex items-center gap-3 text-sm font-medium">
+                <a class="rounded-full border border-white/30 bg-white/10 px-4 py-2 transition hover:bg-white/20"
+                   th:href="@{/transactions}">
+                    Movimientos
+                </a>
+                <button id="theme-toggle"
+                        type="button"
+                        aria-label="Cambiar tema"
+                        aria-pressed="false"
+                        class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-white transition hover:bg-white/20">
+                    <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a.75.75 0 0 1 .75.75V4a.75.75 0 0 1-1.5 0V2.75A.75.75 0 0 1 10 2ZM10 15.25a.75.75 0 0 1 .75.75v1.25a.75.75 0 0 1-1.5 0V16a.75.75 0 0 1 .75-.75ZM4 9.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H4Zm13.25 0a.75.75 0 0 1 0 1.5H16a.75.75 0 0 1 0-1.5h1.25ZM5.227 4.166a.75.75 0 0 1 1.06 0l.884.884a.75.75 0 1 1-1.06 1.06l-.884-.883a.75.75 0 0 1 0-1.061Zm8.542 8.542a.75.75 0 0 1 1.06 0l.884.884a.75.75 0 1 1-1.06 1.06l-.884-.883a.75.75 0 0 1 0-1.061ZM15.713 4.166a.75.75 0 0 1 0 1.06l-.884.884a.75.75 0 1 1-1.06-1.06l.883-.884a.75.75 0 0 1 1.061 0Zm-8.542 8.542a.75.75 0 0 1 0 1.06l-.884.884a.75.75 0 1 1-1.06-1.06l.883-.884a.75.75 0 0 1 1.061 0ZM10 6a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"/>
+                    </svg>
+                    <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" class="hidden h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M11.713 2.046a.75.75 0 0 1 .832.219 7.25 7.25 0 0 0 5.19 11.744.75.75 0 0 1 .53 1.28A8.75 8.75 0 1 1 11.713 2.046Z"/>
+                    </svg>
+                    <span id="theme-label">Claro</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+</header>
+</body>
+</html>

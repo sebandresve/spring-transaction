@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:replace="~{layouts/base :: layout(~{::content})}">
+    <th:block th:fragment="content">
+        <section class="grid gap-6">
+            <div class="rounded-3xl bg-white p-6 shadow-xl shadow-stone-200/60 ring-1 ring-stone-200 dark:bg-stone-900 dark:shadow-none dark:ring-stone-800">
+                <div class="flex flex-col gap-3 border-b border-stone-200 pb-5 dark:border-stone-800 md:flex-row md:items-end md:justify-between">
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-600">Resumen</p>
+                        <h2 class="mt-2 text-2xl font-semibold text-stone-900 dark:text-stone-100">Listado de movimientos</h2>
+                        <p class="mt-1 text-sm text-stone-500 dark:text-stone-400">Vista inicial para mostrar ingresos y egresos registrados.</p>
+                    </div>
+                    <div class="flex flex-col gap-3 md:items-end">
+                        <a class="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500"
+                           th:href="@{/transactions/new}">
+                            Nueva transaccion
+                        </a>
+                        <div class="rounded-2xl bg-stone-100 px-4 py-3 text-sm text-stone-600 dark:bg-stone-800 dark:text-stone-300">
+                            Total registros:
+                            <span class="font-semibold text-stone-900 dark:text-stone-100" th:text="${#lists.size(transactions)}">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-800">
+                    <table class="min-w-full divide-y divide-stone-200 dark:divide-stone-800">
+                        <thead class="bg-stone-50 dark:bg-stone-950/70">
+                        <tr class="text-left text-xs font-semibold uppercase tracking-[0.2em] text-stone-500 dark:text-stone-400">
+                            <th class="px-4 py-4">Id</th>
+                            <th class="px-4 py-4">Descripcion</th>
+                            <th class="px-4 py-4">Tipo</th>
+                            <th class="px-4 py-4 text-right">Monto</th>
+                            <th class="px-4 py-4">Fecha movimiento</th>
+                            <th class="px-4 py-4">Actualizado</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-200 bg-white dark:divide-stone-800 dark:bg-stone-900">
+                        <tr th:if="${#lists.isEmpty(transactions)}">
+                            <td class="px-4 py-8 text-center text-sm text-stone-500 dark:text-stone-400" colspan="6">
+                                Aun no hay movimientos registrados.
+                            </td>
+                        </tr>
+                        <tr class="transition hover:bg-stone-50 dark:hover:bg-stone-800/70" th:each="transaction : ${transactions}">
+                            <td class="px-4 py-4 text-sm font-medium text-stone-900 dark:text-stone-100" th:text="${transaction.id()}">1</td>
+                            <td class="px-4 py-4 text-sm text-stone-600 dark:text-stone-300" th:text="${transaction.description()}">Compra supermercado</td>
+                            <td class="px-4 py-4 text-sm">
+                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+                                      th:classappend="${transaction.type() == 'INCOME'} ? ' bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' : ' bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300'"
+                                      th:text="${transaction.typeLabel()}">
+                                    Ingreso
+                                </span>
+                            </td>
+                            <td class="px-4 py-4 text-right text-sm font-semibold text-stone-900 tabular-nums dark:text-stone-100"
+                                th:text="${#numbers.formatDecimal(transaction.amount(), 1, 'COMMA', 2, 'POINT')}">
+                                0.00
+                            </td>
+                            <td class="px-4 py-4 text-sm text-stone-600 dark:text-stone-300"
+                                th:text="${#temporals.format(transaction.movementDate(), 'dd/MM/yyyy')}">
+                                23/04/2026
+                            </td>
+                            <td class="px-4 py-4 text-sm text-stone-500 dark:text-stone-400"
+                                th:text="${#temporals.format(transaction.updatedAt(), 'dd/MM/yyyy HH:mm')}">
+                                23/04/2026 18:00
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </th:block>
+</th:block>
+</body>
+</html>

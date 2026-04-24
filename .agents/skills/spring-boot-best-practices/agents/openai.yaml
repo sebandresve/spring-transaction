@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spring Boot Best Practices"
+  short_description: "Generate layered Spring Boot app scaffolding"
+  default_prompt: "Use $spring-boot-best-practices to scaffold a layered Spring Boot app."

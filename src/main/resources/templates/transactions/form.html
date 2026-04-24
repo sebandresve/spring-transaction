@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:replace="~{layouts/base :: layout(~{::content})}">
+    <th:block th:fragment="content">
+        <section class="grid gap-6">
+            <div class="rounded-3xl bg-white p-6 shadow-xl shadow-stone-200/60 ring-1 ring-stone-200 dark:bg-stone-900 dark:shadow-none dark:ring-stone-800">
+                <div class="border-b border-stone-200 pb-5 dark:border-stone-800">
+                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-600">Registro</p>
+                    <h2 class="mt-2 text-2xl font-semibold text-stone-900 dark:text-stone-100">Nueva transaccion</h2>
+                    <p class="mt-1 text-sm text-stone-500 dark:text-stone-400">Formulario base para crear un nuevo movimiento.</p>
+                </div>
+
+                <form class="mt-6 grid gap-5" method="post" th:action="@{/transactions}" th:object="${transactionCreateDto}">
+                    <div class="grid gap-2">
+                        <label class="text-sm font-medium text-stone-700 dark:text-stone-200" for="description">Descripcion</label>
+                        <input class="rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none ring-0 transition focus:border-emerald-500 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
+                               th:classappend="${#fields.hasErrors('description')} ? ' border-rose-500 bg-rose-50/60 focus:border-rose-500 dark:border-rose-500 dark:bg-rose-950/20' : ''"
+                               id="description"
+                               maxlength="255"
+                               placeholder="Compra supermercado"
+                               required
+                               th:field="*{description}"
+                               type="text">
+                        <p class="text-sm text-rose-600" th:errors="*{description}" th:if="${#fields.hasErrors('description')}">Error</p>
+                    </div>
+
+                    <div class="grid gap-5 md:grid-cols-3">
+                        <div class="grid gap-2">
+                            <label class="text-sm font-medium text-stone-700 dark:text-stone-200" for="type">Tipo</label>
+                            <select class="rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-emerald-500 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
+                                    th:classappend="${#fields.hasErrors('type')} ? ' border-rose-500 bg-rose-50/60 focus:border-rose-500 dark:border-rose-500 dark:bg-rose-950/20' : ''"
+                                    id="type"
+                                    required
+                                    th:field="*{type}">
+                                <option th:each="transactionType : ${transactionTypes}"
+                                        th:text="${transactionType.value}"
+                                        th:value="${transactionType}">
+                                    Ingreso
+                                </option>
+                            </select>
+                            <p class="text-sm text-rose-600" th:errors="*{type}" th:if="${#fields.hasErrors('type')}">Error</p>
+                        </div>
+
+                        <div class="grid gap-2">
+                            <label class="text-sm font-medium text-stone-700 dark:text-stone-200" for="amount">Monto</label>
+                            <input class="rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none ring-0 transition focus:border-emerald-500 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
+                                   th:classappend="${#fields.hasErrors('amount')} ? ' border-rose-500 bg-rose-50/60 focus:border-rose-500 dark:border-rose-500 dark:bg-rose-950/20' : ''"
+                                   id="amount"
+                                   min="0.01"
+                                   placeholder="0.00"
+                                   required
+                                   step="0.01"
+                                   th:field="*{amount}"
+                                   type="number">
+                            <p class="text-sm text-rose-600" th:errors="*{amount}" th:if="${#fields.hasErrors('amount')}">Error</p>
+                        </div>
+
+                        <div class="grid gap-2">
+                            <label class="text-sm font-medium text-stone-700 dark:text-stone-200" for="movementDate">Fecha</label>
+                            <input class="rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none ring-0 transition focus:border-emerald-500 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
+                                   th:classappend="${#fields.hasErrors('movementDate')} ? ' border-rose-500 bg-rose-50/60 focus:border-rose-500 dark:border-rose-500 dark:bg-rose-950/20' : ''"
+                                   id="movementDate"
+                                   required
+                                   th:field="*{movementDate}"
+                                   type="date">
+                            <p class="text-sm text-rose-600" th:errors="*{movementDate}" th:if="${#fields.hasErrors('movementDate')}">Error</p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button class="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500"
+                                type="submit">
+                            Guardar transaccion
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </th:block>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(contentTemplate)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle != null ? pageTitle + ' | Finanzas' : 'Finanzas'}">Finanzas</title>
+    <script>
+        const storedTheme = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const initialTheme = storedTheme ?? (prefersDark ? "dark" : "light");
+
+        document.documentElement.classList.toggle("dark", initialTheme === "dark");
+        document.documentElement.style.colorScheme = initialTheme;
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class"
+        };
+    </script>
+</head>
+<body class="min-h-screen bg-stone-100 text-stone-900 transition-colors duration-300 dark:bg-stone-950 dark:text-stone-100">
+<div class="relative isolate overflow-hidden">
+    <div class="absolute inset-x-0 top-0 -z-10 h-72 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 opacity-90 dark:from-emerald-900 dark:via-teal-900 dark:to-cyan-950"></div>
+    <div class="absolute inset-x-0 top-48 -z-10 h-72 bg-white/70 blur-3xl dark:bg-cyan-950/30"></div>
+
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="mx-auto w-full max-w-6xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
+        <th:block th:replace="${contentTemplate}"></th:block>
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</div>
+<script>
+    const themeToggle = document.getElementById("theme-toggle");
+    const themeIconLight = document.getElementById("theme-icon-light");
+    const themeIconDark = document.getElementById("theme-icon-dark");
+    const themeLabel = document.getElementById("theme-label");
+
+    const applyTheme = (theme) => {
+        const isDark = theme === "dark";
+        document.documentElement.classList.toggle("dark", isDark);
+        document.documentElement.style.colorScheme = theme;
+        localStorage.setItem("theme", theme);
+        return isDark;
+    };
+
+    const syncThemeToggle = () => {
+        const isDark = document.documentElement.classList.contains("dark");
+        if (themeIconLight) {
+            themeIconLight.classList.toggle("hidden", isDark);
+        }
+        if (themeIconDark) {
+            themeIconDark.classList.toggle("hidden", !isDark);
+        }
+        if (themeLabel) {
+            themeLabel.textContent = isDark ? "Oscuro" : "Claro";
+        }
+        if (themeToggle) {
+            themeToggle.setAttribute("aria-pressed", String(isDark));
+        }
+    };
+
+    syncThemeToggle();
+
+    if (themeToggle) {
+        themeToggle.addEventListener("click", () => {
+            const nextTheme = document.documentElement.classList.contains("dark") ? "light" : "dark";
+            applyTheme(nextTheme);
+            syncThemeToggle();
+        });
+    }
+</script>
+</body>
+</html>
