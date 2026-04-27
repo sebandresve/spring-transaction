@@ -45,4 +45,14 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction savedTransaction = transactionRepository.save(transaction);
         return transactionMapper.toDto(savedTransaction);
     }
+
+    @Override
+    @Transactional
+    public void deleteById(Long id) {
+        if (!transactionRepository.existsById(id)) {
+            return;
+        }
+
+        transactionRepository.deleteById(id);
+    }
 }

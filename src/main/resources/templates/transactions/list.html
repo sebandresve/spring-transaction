@@ -33,11 +33,12 @@
                             <th class="px-4 py-4 text-right">Monto</th>
                             <th class="px-4 py-4">Fecha movimiento</th>
                             <th class="px-4 py-4">Actualizado</th>
+                            <th class="px-4 py-4 text-right">Acciones</th>
                         </tr>
                         </thead>
                         <tbody class="divide-y divide-stone-200 bg-white dark:divide-stone-800 dark:bg-stone-900">
                         <tr th:if="${#lists.isEmpty(transactions)}">
-                            <td class="px-4 py-8 text-center text-sm text-stone-500 dark:text-stone-400" colspan="6">
+                            <td class="px-4 py-8 text-center text-sm text-stone-500 dark:text-stone-400" colspan="7">
                                 Aun no hay movimientos registrados.
                             </td>
                         </tr>
@@ -63,6 +64,17 @@
                                 th:text="${#temporals.format(transaction.updatedAt(), 'dd/MM/yyyy HH:mm')}">
                                 23/04/2026 18:00
                             </td>
+                            <td class="px-4 py-4 text-right">
+                                <form th:action="@{/transactions/{id}/delete(id=${transaction.id()})}"
+                                      method="post"
+                                      class="delete-transaction-form"
+                                      th:attr="data-description=${transaction.description()}">
+                                    <button type="submit"
+                                            class="inline-flex items-center justify-center rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-rose-700 transition hover:bg-rose-100 dark:border-rose-900 dark:bg-rose-950 dark:text-rose-300 dark:hover:bg-rose-900">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -71,5 +83,36 @@
         </section>
     </th:block>
 </th:block>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const deleteTransactionForms = document.querySelectorAll(".delete-transaction-form");
+
+    deleteTransactionForms.forEach((form) => {
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const isDark = document.documentElement.classList.contains("dark");
+            const description = form.dataset.description || "esta transaccion";
+
+            const result = await Swal.fire({
+                title: "Eliminar transaccion",
+                text: `Se eliminara ${description}. Esta accion no se puede deshacer.`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Si, eliminar",
+                cancelButtonText: "Cancelar",
+                reverseButtons: true,
+                background: isDark ? "#111827" : "#ffffff",
+                color: isDark ? "#f5f5f4" : "#1c1917",
+                confirmButtonColor: "#dc2626",
+                cancelButtonColor: isDark ? "#334155" : "#d6d3d1"
+            });
+
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+</script>
 </body>
 </html>

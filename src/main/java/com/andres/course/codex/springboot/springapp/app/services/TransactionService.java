@@ -10,4 +10,6 @@ public interface TransactionService {
     List<TransactionDto> findAll();
 
     TransactionDto save(TransactionCreateDto transactionCreateDto);
+
+    void deleteById(Long id);
 }
