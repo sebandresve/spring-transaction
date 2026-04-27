@@ -65,15 +65,21 @@
                                 23/04/2026 18:00
                             </td>
                             <td class="px-4 py-4 text-right">
-                                <form th:action="@{/transactions/{id}/delete(id=${transaction.id()})}"
-                                      method="post"
-                                      class="delete-transaction-form"
-                                      th:attr="data-description=${transaction.description()}">
-                                    <button type="submit"
-                                            class="inline-flex items-center justify-center rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-rose-700 transition hover:bg-rose-100 dark:border-rose-900 dark:bg-rose-950 dark:text-rose-300 dark:hover:bg-rose-900">
-                                        Eliminar
-                                    </button>
-                                </form>
+                                <div class="flex justify-end gap-2">
+                                    <a class="inline-flex items-center justify-center rounded-full border border-cyan-200 bg-cyan-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-cyan-700 transition hover:bg-cyan-100 dark:border-cyan-900 dark:bg-cyan-950 dark:text-cyan-300 dark:hover:bg-cyan-900"
+                                       th:href="@{/transactions/{id}/edit(id=${transaction.id()})}">
+                                        Editar
+                                    </a>
+                                    <form th:action="@{/transactions/{id}/delete(id=${transaction.id()})}"
+                                          method="post"
+                                          class="delete-transaction-form"
+                                          th:attr="data-description=${transaction.description()}">
+                                        <button type="submit"
+                                                class="inline-flex items-center justify-center rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-rose-700 transition hover:bg-rose-100 dark:border-rose-900 dark:bg-rose-950 dark:text-rose-300 dark:hover:bg-rose-900">
+                                            Eliminar
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         </tbody>

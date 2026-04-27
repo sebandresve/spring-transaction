@@ -7,11 +7,11 @@
             <div class="rounded-3xl bg-white p-6 shadow-xl shadow-stone-200/60 ring-1 ring-stone-200 dark:bg-stone-900 dark:shadow-none dark:ring-stone-800">
                 <div class="border-b border-stone-200 pb-5 dark:border-stone-800">
                     <p class="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-600">Registro</p>
-                    <h2 class="mt-2 text-2xl font-semibold text-stone-900 dark:text-stone-100">Nueva transaccion</h2>
-                    <p class="mt-1 text-sm text-stone-500 dark:text-stone-400">Formulario base para crear un nuevo movimiento.</p>
+                    <h2 class="mt-2 text-2xl font-semibold text-stone-900 dark:text-stone-100" th:text="${formTitle}">Nueva transaccion</h2>
+                    <p class="mt-1 text-sm text-stone-500 dark:text-stone-400" th:text="${formDescription}">Formulario base para crear un nuevo movimiento.</p>
                 </div>
 
-                <form class="mt-6 grid gap-5" method="post" th:action="@{/transactions}" th:object="${transactionCreateDto}">
+                <form class="mt-6 grid gap-5" method="post" th:action="${formAction}" th:object="${transactionCreateDto}">
                     <div class="grid gap-2">
                         <label class="text-sm font-medium text-stone-700 dark:text-stone-200" for="description">Descripcion</label>
                         <input class="rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none ring-0 transition focus:border-emerald-500 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
@@ -70,6 +70,7 @@
 
                     <div class="flex justify-end">
                         <button class="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500"
+                                th:text="${submitLabel}"
                                 type="submit">
                             Guardar transaccion
                         </button>

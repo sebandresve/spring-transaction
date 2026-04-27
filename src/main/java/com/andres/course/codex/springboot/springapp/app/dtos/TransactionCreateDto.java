@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ public record TransactionCreateDto(
         BigDecimal amount,
         @NotNull(message = "La fecha de movimiento es obligatoria.")
         @PastOrPresent(message = "La fecha de movimiento no puede ser futura.")
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         LocalDate movementDate
 ) {
 }

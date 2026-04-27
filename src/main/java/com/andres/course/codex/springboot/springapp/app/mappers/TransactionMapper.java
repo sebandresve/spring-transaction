@@ -23,10 +23,23 @@ public class TransactionMapper {
 
     public Transaction toEntity(TransactionCreateDto transactionCreateDto) {
         Transaction transaction = new Transaction();
+        apply(transaction, transactionCreateDto);
+        return transaction;
+    }
+
+    public TransactionCreateDto toCreateDto(Transaction transaction) {
+        return new TransactionCreateDto(
+                transaction.getDescription(),
+                transaction.getType(),
+                transaction.getAmount(),
+                transaction.getMovementDate()
+        );
+    }
+
+    public void apply(Transaction transaction, TransactionCreateDto transactionCreateDto) {
         transaction.setDescription(transactionCreateDto.description());
         transaction.setType(transactionCreateDto.type());
         transaction.setAmount(transactionCreateDto.amount());
         transaction.setMovementDate(transactionCreateDto.movementDate());
-        return transaction;
     }
 }

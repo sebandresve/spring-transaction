@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -39,11 +40,29 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public TransactionCreateDto findCreateDtoById(Long id) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Transaccion no encontrada: " + id));
+        return transactionMapper.toCreateDto(transaction);
+    }
+
+    @Override
     @Transactional
     public TransactionDto save(TransactionCreateDto transactionCreateDto) {
         Transaction transaction = transactionMapper.toEntity(transactionCreateDto);
         Transaction savedTransaction = transactionRepository.save(transaction);
         return transactionMapper.toDto(savedTransaction);
+    }
+
+    @Override
+    @Transactional
+    public TransactionDto update(Long id, TransactionCreateDto transactionCreateDto) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Transaccion no encontrada: " + id));
+        transactionMapper.apply(transaction, transactionCreateDto);
+        Transaction updatedTransaction = transactionRepository.save(transaction);
+        return transactionMapper.toDto(updatedTransaction);
     }
 
     @Override
