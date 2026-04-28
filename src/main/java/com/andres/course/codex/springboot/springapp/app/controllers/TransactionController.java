@@ -1,9 +1,12 @@
 package com.andres.course.codex.springboot.springapp.app.controllers;
 
 import com.andres.course.codex.springboot.springapp.app.dtos.TransactionCreateDto;
+import com.andres.course.codex.springboot.springapp.app.dtos.TransactionFilterDto;
 import com.andres.course.codex.springboot.springapp.app.models.TransactionType;
 import jakarta.validation.Valid;
 import com.andres.course.codex.springboot.springapp.app.services.TransactionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -18,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/transactions")
@@ -30,8 +34,19 @@ public class TransactionController {
     }
 
     @GetMapping
-    public String findAll(Model model) {
-        model.addAttribute("transactions", transactionService.findAll());
+    public String findAll(
+            @ModelAttribute("transactionFilterDto") TransactionFilterDto transactionFilterDto,
+            @org.springframework.web.bind.annotation.RequestParam(name = "page", defaultValue = "0") int page,
+            Model model
+    ) {
+        int safePage = Math.max(page, 0);
+        Page<?> transactionsPage = transactionService.findAll(transactionFilterDto, PageRequest.of(safePage, 10));
+
+        model.addAttribute("transactions", transactionsPage.getContent());
+        model.addAttribute("transactionsPage", transactionsPage);
+        model.addAttribute("transactionTypes", Arrays.asList(TransactionType.values()));
+        model.addAttribute("hasActiveFilters", transactionFilterDto.hasActiveFilters());
+        model.addAttribute("pageNumbers", buildPageNumbers(transactionsPage.getTotalPages()));
         model.addAttribute("pageTitle", "Movimientos");
         return "transactions/list";
     }
@@ -121,5 +136,11 @@ public class TransactionController {
         );
         model.addAttribute("submitLabel", editMode ? "Actualizar transaccion" : "Guardar transaccion");
         model.addAttribute("formAction", editMode ? "/transactions/" + id : "/transactions");
+    }
+
+    private List<Integer> buildPageNumbers(int totalPages) {
+        return java.util.stream.IntStream.range(0, totalPages)
+                .boxed()
+                .toList();
     }
 }

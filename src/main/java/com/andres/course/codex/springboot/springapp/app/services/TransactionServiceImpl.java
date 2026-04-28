@@ -2,15 +2,22 @@ package com.andres.course.codex.springboot.springapp.app.services;
 
 import com.andres.course.codex.springboot.springapp.app.dtos.TransactionCreateDto;
 import com.andres.course.codex.springboot.springapp.app.dtos.TransactionDto;
+import com.andres.course.codex.springboot.springapp.app.dtos.TransactionFilterDto;
 import com.andres.course.codex.springboot.springapp.app.mappers.TransactionMapper;
 import com.andres.course.codex.springboot.springapp.app.models.Transaction;
 import com.andres.course.codex.springboot.springapp.app.repositories.TransactionRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.criteria.Predicate;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.ArrayList;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -27,16 +34,18 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionDto> findAll() {
-        Sort sort = Sort.by(
-                Sort.Order.desc("movementDate"),
-                Sort.Order.desc("id")
+    public Page<TransactionDto> findAll(TransactionFilterDto transactionFilterDto, Pageable pageable) {
+        Pageable normalizedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(
+                        Sort.Order.desc("movementDate"),
+                        Sort.Order.desc("id")
+                )
         );
 
-        return transactionRepository.findAll(sort)
-                .stream()
-                .map(transactionMapper::toDto)
-                .toList();
+        return transactionRepository.findAll(buildSpecification(transactionFilterDto), normalizedPageable)
+                .map(transactionMapper::toDto);
     }
 
     @Override
@@ -73,5 +82,70 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         transactionRepository.deleteById(id);
+    }
+
+    private Specification<Transaction> buildSpecification(TransactionFilterDto transactionFilterDto) {
+        return (root, query, criteriaBuilder) -> {
+            if (transactionFilterDto == null) {
+                return criteriaBuilder.conjunction();
+            }
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (hasText(transactionFilterDto.getDescription())) {
+                predicates.add(
+                        criteriaBuilder.like(
+                                criteriaBuilder.lower(root.get("description")),
+                                "%" + transactionFilterDto.getDescription().trim().toLowerCase() + "%"
+                        )
+                );
+            }
+
+            if (transactionFilterDto.getType() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("type"), transactionFilterDto.getType()));
+            }
+
+            if (transactionFilterDto.getMovementDateFrom() != null) {
+                predicates.add(
+                        criteriaBuilder.greaterThanOrEqualTo(
+                                root.get("movementDate"),
+                                transactionFilterDto.getMovementDateFrom()
+                        )
+                );
+            }
+
+            if (transactionFilterDto.getMovementDateTo() != null) {
+                predicates.add(
+                        criteriaBuilder.lessThanOrEqualTo(
+                                root.get("movementDate"),
+                                transactionFilterDto.getMovementDateTo()
+                        )
+                );
+            }
+
+            if (transactionFilterDto.getAmountMin() != null) {
+                predicates.add(
+                        criteriaBuilder.greaterThanOrEqualTo(
+                                root.get("amount"),
+                                transactionFilterDto.getAmountMin()
+                        )
+                );
+            }
+
+            if (transactionFilterDto.getAmountMax() != null) {
+                predicates.add(
+                        criteriaBuilder.lessThanOrEqualTo(
+                                root.get("amount"),
+                                transactionFilterDto.getAmountMax()
+                        )
+                );
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 }
